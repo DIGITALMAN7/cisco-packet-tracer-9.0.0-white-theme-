@@ -8,3 +8,4 @@ Features:
 - Uses the Packet Tracer icon
 - Restores the original theme after startup
 - Blocks Packet Tracer inbound and outbound network access on Private and Public networks
+- Delete the installer after first run
