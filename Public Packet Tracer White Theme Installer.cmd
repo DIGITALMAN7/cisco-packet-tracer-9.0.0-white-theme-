@@ -61,8 +61,8 @@ $desktop = [Environment]::GetFolderPath('Desktop')
 $shortcutPath = Join-Path $desktop 'Public Packet Tracer White Theme.lnk'
 $shell = New-Object -ComObject WScript.Shell
 $shortcut = $shell.CreateShortcut($shortcutPath)
-$shortcut.TargetPath = $env:ComSpec
-$shortcut.Arguments = '/c "' + $env:LAUNCHER + '"'
+$shortcut.TargetPath = Join-Path $PSHOME 'powershell.exe'
+$shortcut.Arguments = '-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command "& { & ''' + $env:LAUNCHER + ''' }"'
 $shortcut.WorkingDirectory = Split-Path $env:LAUNCHER
 $shortcut.IconLocation = "$($packetTracer.FullName),0"
 $shortcut.Description = 'Launch Packet Tracer with a white theme'
@@ -71,8 +71,8 @@ $shortcut.Save()
 try {
     Set-ItemProperty -Path $themeKey -Name AppsUseLightTheme -Value 1 -Type DWord
     Set-ItemProperty -Path $themeKey -Name SystemUsesLightTheme -Value 1 -Type DWord
-    Start-Process -FilePath $packetTracer.FullName | Out-Null
-    Start-Sleep -Seconds 12
+    $packetTracerProcess = Start-Process -FilePath $packetTracer.FullName -PassThru
+    $packetTracerProcess.WaitForExit()
 }
 finally {
     Set-ItemProperty -Path $themeKey -Name AppsUseLightTheme -Value 0 -Type DWord
